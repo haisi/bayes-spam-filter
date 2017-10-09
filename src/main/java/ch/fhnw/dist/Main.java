@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @author Hasan Kara <hasan.kara@students.fhnw.ch>
@@ -14,14 +15,20 @@ public class Main {
     final Tokenizer tokenizer = new WhitespaceTokenizer();
 
     public static void main(String[] args) {
-        Main main = new Main();
-        main.getFiles("data/ham-anlern");
-        String fileContent = main.getFileContent("data/ham-anlern/2551.3b1f94418de5bd544c977b44bcc7e740");
-        for (String word : main.tokenizer.getTokens(fileContent)) {
-            main.count(word, false);
-        }
+        new Main().start();
+    }
 
-        main.words.forEach((s, hamSpamTuple) -> {
+    void start() {
+        List<String> fileListHamLearning = getFiles("data/ham-anlern");
+        fileListHamLearning.stream()
+                           .map(fileName -> "data/ham-anlern/" + fileName)
+                           .map(this::getFileContent) // Read Mail content
+                           .map(tokenizer::getTokens) // tokenize (returns String[])
+                           .map(array -> new HashSet<>(Arrays.asList(array)).toArray(new String[0])) // Remove duplicates tokens in mail
+                           .flatMap(Arrays::stream)
+                           .forEach(word -> count(word, false));
+
+        words.forEach((s, hamSpamTuple) -> {
             System.out.println(s + "\t" + hamSpamTuple);
         });
     }
@@ -47,7 +54,7 @@ public class Main {
     private List<String> getFiles(String folder) {
         List<String> fileNames = new ArrayList<>();
         for (File file : getResourceFolderFiles(folder)) {
-            fileNames.add("data/" + file.getName());
+            fileNames.add(file.getName());
         }
         return fileNames;
     }

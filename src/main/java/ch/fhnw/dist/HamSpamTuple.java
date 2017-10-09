@@ -8,8 +8,18 @@ public class HamSpamTuple {
     private int hamCount = 0;
     private int spamCount = 0;
 
-    public float getAlpha() {
+    /**
+     * @return P(Word , S)
+     */
+    public double probabilitySpam() {
         return spamCount / (hamCount + spamCount);
+    }
+
+    /**
+     * @return P(Word , H)
+     */
+    public double probabilityHam() {
+        return hamCount / (hamCount + spamCount);
     }
 
     public int incrementHam() {
