@@ -24,10 +24,20 @@ public class Main {
         int numberOfHamMails = countWords("data/ham-anlern", false);
         int numberOfSpamMails = countWords("data/spam-anlern", true);
 
+        //Nenner verkleinern
+        int min = Math.min(numberOfSpamMails,numberOfHamMails);
+        if(min != 0) {
+            numberOfSpamMails = numberOfSpamMails / min;
+            numberOfHamMails = numberOfHamMails / min;
+        }
+        int finalNumberOfSpamMails = numberOfSpamMails;
+        int finalNumberOfHamMails = numberOfHamMails;
+        
         words.forEach((s, hamSpamTuple) -> {
-            System.out.println(s + "\t" + hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails));
+            System.out.println(s + "\t" + hamSpamTuple.getProbabilitySpam(finalNumberOfSpamMails, finalNumberOfHamMails));
         });
 
+        System.out.println("---------------TOTAL SPAM PROBABILITY:---------------");
         System.out.println(totalSpamProbability(getFileContent("data/spam-kallibrierung/00040.949a3d300eadb91d8745f1c1dab51133"), numberOfSpamMails, numberOfHamMails));
 
     }
