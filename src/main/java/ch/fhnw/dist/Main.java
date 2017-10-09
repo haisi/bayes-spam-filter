@@ -22,7 +22,7 @@ public class Main {
         int numberOfSpamMails = countWords("data/spam-anlern", true);
 
         words.forEach((s, hamSpamTuple) -> {
-            System.out.println(s + "\t" + hamSpamTuple);
+            System.out.println(s + "\t" + hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails));
         });
     }
 

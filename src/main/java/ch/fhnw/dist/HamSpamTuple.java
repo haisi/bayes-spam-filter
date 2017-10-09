@@ -11,15 +11,21 @@ public class HamSpamTuple {
     /**
      * @return P(Word , S)
      */
-    public double probabilitySpam(int numberOfSpamMails) {
-        return spamCount / numberOfSpamMails;
+    public double getProbabilitySpam(int numberOfSpamMails, int numberOfHamMails) {
+        int totalNumberOfMail = numberOfHamMails + numberOfSpamMails;
+        double zähler = (double) spamCount / (double) totalNumberOfMail;
+        double nenner = (double) numberOfSpamMails / (double) totalNumberOfMail;
+        return zähler / nenner;
     }
 
     /**
      * @return P(Word , H)
      */
-    public double probabilityHam() {
-        return hamCount / (hamCount + spamCount);
+    public double getProbabilityHam(int numberOfSpamMails, int numberOfHamMails) {
+        int totalNumberOfMail = numberOfHamMails + numberOfSpamMails;
+        double zähler = (double) hamCount / (double) totalNumberOfMail;
+        double nenner = (double) numberOfHamMails / (double) totalNumberOfMail;
+        return zähler / nenner;
     }
 
     public int incrementHam() {
