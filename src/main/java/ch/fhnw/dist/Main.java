@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * @author Hasan Kara <hasan.kara@students.fhnw.ch>
@@ -19,18 +18,23 @@ public class Main {
     }
 
     void start() {
-        List<String> fileListHamLearning = getFiles("data/ham-anlern");
-        fileListHamLearning.stream()
-                           .map(fileName -> "data/ham-anlern/" + fileName)
-                           .map(this::getFileContent) // Read Mail content
-                           .map(tokenizer::getTokens) // tokenize (returns String[])
-                           .map(array -> new HashSet<>(Arrays.asList(array)).toArray(new String[0])) // Remove duplicates tokens in mail
-                           .flatMap(Arrays::stream)
-                           .forEach(word -> count(word, false));
+        countWords("data/ham-anlern", false);
+        countWords("data/spam-anlern", true);
 
         words.forEach((s, hamSpamTuple) -> {
             System.out.println(s + "\t" + hamSpamTuple);
         });
+    }
+
+    private void countWords(String folder, boolean spam) {
+        List<String> fileListHamLearning = getFiles(folder);
+        fileListHamLearning.stream()
+                           .map(fileName -> folder + "/" + fileName)
+                           .map(this::getFileContent) // Read Mail content
+                           .map(tokenizer::getTokens) // tokenize (returns String[])
+                           .map(array -> new HashSet<>(Arrays.asList(array)).toArray(new String[0])) // Remove duplicates tokens in mail
+                           .flatMap(Arrays::stream)
+                           .forEach(word -> count(word, spam));
     }
 
     public void count(String word, boolean spam) {
