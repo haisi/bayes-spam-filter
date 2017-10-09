@@ -32,13 +32,13 @@ public class Main {
         }
         int finalNumberOfSpamMails = numberOfSpamMails;
         int finalNumberOfHamMails = numberOfHamMails;
-        
+
         words.forEach((s, hamSpamTuple) -> {
             System.out.println(s + "\t" + hamSpamTuple.getProbabilitySpam(finalNumberOfSpamMails, finalNumberOfHamMails));
         });
 
         System.out.println("---------------TOTAL SPAM PROBABILITY:---------------");
-        System.out.println(totalSpamProbability(getFileContent("data/spam-kallibrierung/00040.949a3d300eadb91d8745f1c1dab51133"), numberOfSpamMails, numberOfHamMails));
+        System.out.println(totalSpamProbability(getFileContent("data/spam-kallibrierung/00040.949a3d300eadb91d8745f1c1dab51133"), finalNumberOfSpamMails, finalNumberOfHamMails));
 
     }
 
