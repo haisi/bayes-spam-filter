@@ -13,6 +13,9 @@ public class Main {
     final Map<String, HamSpamTuple> words = new HashMap<>();
     final Tokenizer tokenizer = new WhitespaceTokenizer();
 
+    private double spamProbability = 0.5d;
+    private double hamProbability = 1 - spamProbability;
+
     public static void main(String[] args) {
         new Main().start();
     }
@@ -24,6 +27,46 @@ public class Main {
         words.forEach((s, hamSpamTuple) -> {
             System.out.println(s + "\t" + hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails));
         });
+
+        System.out.println(totalSpamProbability(getFileContent("data/spam-kallibrierung/00040.949a3d300eadb91d8745f1c1dab51133"), numberOfSpamMails, numberOfHamMails));
+
+    }
+
+    /**
+     * Berechnet total Wahrscheinlichkeit
+     *
+     * @param mailContent
+     * @param numberOfSpamMails
+     * @param numberOfHamMails
+     * @return
+     */
+    public double totalSpamProbability(String mailContent, int numberOfSpamMails, int numberOfHamMails) {
+
+        String[] tokens = tokenizer.getTokens(mailContent);
+        HashSet<String> nonDuplicateTokens = new HashSet<>(Arrays.asList(tokens));
+
+        Map<String, HamSpamTuple> wordsInMailAndDatabase = new HashMap<>();
+        for (String word : nonDuplicateTokens) {
+            HamSpamTuple value = words.get(word);
+            // Because some words from the calibration data set aren't available in the training set
+            if (value != null) {
+                wordsInMailAndDatabase.put(word, value);
+            }
+        }
+
+        double productSpamProbability = spamProbability;
+        double productHamProbability = hamProbability;
+        for (HamSpamTuple hamSpamTuple : wordsInMailAndDatabase.values()) {
+            // TODO: the product of the spam and ham probability can be 0!!
+            // TODO: Fix!
+            productSpamProbability *= hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails);
+            productHamProbability *= hamSpamTuple.getProbabilityHam(numberOfSpamMails, numberOfHamMails);
+        }
+
+        double zähler = productSpamProbability;
+        double nenner = productSpamProbability + productHamProbability;
+
+        return zähler / nenner;
     }
 
     private int countWords(String folder, boolean spam) {
