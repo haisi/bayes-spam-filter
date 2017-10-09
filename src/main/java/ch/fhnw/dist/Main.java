@@ -18,23 +18,25 @@ public class Main {
     }
 
     void start() {
-        countWords("data/ham-anlern", false);
-        countWords("data/spam-anlern", true);
+        int numberOfHamMails = countWords("data/ham-anlern", false);
+        int numberOfSpamMails = countWords("data/spam-anlern", true);
 
         words.forEach((s, hamSpamTuple) -> {
             System.out.println(s + "\t" + hamSpamTuple);
         });
     }
 
-    private void countWords(String folder, boolean spam) {
-        List<String> fileListHamLearning = getFiles(folder);
-        fileListHamLearning.stream()
+    private int countWords(String folder, boolean spam) {
+        List<String> mailList = getFiles(folder);
+        mailList.stream()
                            .map(fileName -> folder + "/" + fileName)
                            .map(this::getFileContent) // Read Mail content
                            .map(tokenizer::getTokens) // tokenize (returns String[])
                            .map(array -> new HashSet<>(Arrays.asList(array)).toArray(new String[0])) // Remove duplicates tokens in mail
                            .flatMap(Arrays::stream)
                            .forEach(word -> count(word, spam));
+
+        return mailList.size();
     }
 
     public void count(String word, boolean spam) {

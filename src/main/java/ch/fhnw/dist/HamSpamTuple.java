@@ -11,8 +11,8 @@ public class HamSpamTuple {
     /**
      * @return P(Word , S)
      */
-    public double probabilitySpam() {
-        return spamCount / (hamCount + spamCount);
+    public double probabilitySpam(int numberOfSpamMails) {
+        return spamCount / numberOfSpamMails;
     }
 
     /**
