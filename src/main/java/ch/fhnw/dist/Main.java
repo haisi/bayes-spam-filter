@@ -25,10 +25,13 @@ public class Main {
         int numberOfSpamMails = countWords("data/spam-anlern", true);
 
         //Nenner verkleinern
-        int min = Math.min(numberOfSpamMails,numberOfHamMails);
-        if(min != 0) {
+        int min = Math.min(numberOfSpamMails, numberOfHamMails);
+        if (min != 0) {
             numberOfSpamMails = numberOfSpamMails / min;
             numberOfHamMails = numberOfHamMails / min;
+            words.forEach((s, hamSpamTuple) -> {
+                hamSpamTuple.normalizeByMinBagSize(min);
+            });
         }
         int finalNumberOfSpamMails = numberOfSpamMails;
         int finalNumberOfHamMails = numberOfHamMails;
@@ -37,9 +40,11 @@ public class Main {
             System.out.println(s + "\t" + hamSpamTuple.getProbabilitySpam(finalNumberOfSpamMails, finalNumberOfHamMails));
         });
 
-        System.out.println("---------------TOTAL SPAM PROBABILITY:---------------");
+        System.out.println("\n---------------TOTAL SPAM PROBABILITY FOR SPAM MAIL:---------------");
         System.out.println(totalSpamProbability(getFileContent("data/spam-kallibrierung/00040.949a3d300eadb91d8745f1c1dab51133"), finalNumberOfSpamMails, finalNumberOfHamMails));
 
+        System.out.println("\n---------------TOTAL SPAM PROBABILITY FOR HAM MAIL:---------------");
+        System.out.println(totalSpamProbability(getFileContent("data/ham-kallibrierung/0001.ea7e79d3153e7469e7a9c3e0af6a357e"), finalNumberOfSpamMails, finalNumberOfHamMails));
     }
 
     /**
@@ -64,19 +69,35 @@ public class Main {
             }
         }
 
-        double productSpamProbability = spamProbability;
-        double productHamProbability = hamProbability;
+        //Variante 1
+//        double productSpamProbability = spamProbability;
+//        double productHamProbability = hamProbability;
+//        for (HamSpamTuple hamSpamTuple : wordsInMailAndDatabase.values()) {
+//            double pSpam = hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails);
+//            double pHam = hamSpamTuple.getProbabilityHam(numberOfSpamMails, numberOfHamMails);
+//            if(pSpam > 0){
+//                productSpamProbability *= pSpam;
+//            }
+//            if(pHam > 0){
+//                productHamProbability *= pHam;
+//            }
+//        }
+//
+//        double zaehler = productSpamProbability;
+//        double nenner = productSpamProbability + productHamProbability;
+//
+//        return zaehler / nenner;
+
+        //Variante 2
+        double product = 1;
         for (HamSpamTuple hamSpamTuple : wordsInMailAndDatabase.values()) {
-            // TODO: the product of the spam and ham probability can be 0!!
-            // TODO: Fix!
-            productSpamProbability *= hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails);
-            productHamProbability *= hamSpamTuple.getProbabilityHam(numberOfSpamMails, numberOfHamMails);
+            double pSpam = hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails);
+            double pHam = hamSpamTuple.getProbabilityHam(numberOfSpamMails, numberOfHamMails);
+            if(pSpam > 0 && pHam > 0){
+                product *= (pHam * pSpam);
+            }
         }
-
-        double zähler = productSpamProbability;
-        double nenner = productSpamProbability + productHamProbability;
-
-        return zähler / nenner;
+        return 1/(1+product);
     }
 
     private int countWords(String folder, boolean spam) {

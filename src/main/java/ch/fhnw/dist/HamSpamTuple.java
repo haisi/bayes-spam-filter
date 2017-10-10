@@ -5,8 +5,8 @@ package ch.fhnw.dist;
  */
 public class HamSpamTuple {
 
-    private int hamCount = 0;
-    private int spamCount = 0;
+    private double hamCount = 0;
+    private double spamCount = 0;
 
     /**
      * @return P(Word , S)
@@ -28,21 +28,26 @@ public class HamSpamTuple {
         return zähler / nenner;
     }
 
-    public int incrementHam() {
+    public void normalizeByMinBagSize(double min) {
+        hamCount /= min;
+        spamCount /= min;
+    }
+
+    public double incrementHam() {
         hamCount++;
         return hamCount;
     }
 
-    public int incrementSpam() {
+    public double incrementSpam() {
         spamCount++;
         return spamCount;
     }
 
-    public int getHamCount() {
+    public double getHamCount() {
         return hamCount;
     }
 
-    public int getSpamCount() {
+    public double getSpamCount() {
         return spamCount;
     }
 
