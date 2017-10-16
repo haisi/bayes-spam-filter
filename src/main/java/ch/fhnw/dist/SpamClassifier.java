@@ -68,6 +68,10 @@ public class SpamClassifier {
         numberNormalizedOfHamMails = numberOfHamMails;
     }
 
+    public double totalSpamProbability(String mailContent) {
+        return totalSpamProbability(mailContent, getNormalizedNumberOfSpamMails(), getNormalizedNumberOfHamMails());
+    }
+
     /**
      * Berechnet total Wahrscheinlichkeit
      *
