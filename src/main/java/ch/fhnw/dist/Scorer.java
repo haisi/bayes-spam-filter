@@ -63,6 +63,8 @@ public class Scorer {
             }
         }
 
+        System.out.println("Best F1 score: " + bestF1Score);
+
         return bestAlpha;
     }
 
