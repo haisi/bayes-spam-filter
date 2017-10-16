@@ -155,4 +155,10 @@ public class SpamClassifier {
             value.incrementHam();
         }
     }
+
+    void printSpamProbabilityForEachWord(int finalNumberOfSpamMails, int finalNumberOfHamMails) {
+        words.forEach((s, hamSpamTuple) -> {
+            System.out.println(s + "\t" + hamSpamTuple.getProbabilitySpam(finalNumberOfSpamMails, finalNumberOfHamMails));
+        });
+    }
 }
