@@ -18,8 +18,8 @@ public class Scorer {
 
     public double calculateBestAlpha() {
 
-        List<String> hamMailContents = getMailContentOfMails("data/ham-kallibrierung");
-        List<String> spamMailContents = getMailContentOfMails("data/spam-kallibrierung");
+        List<String> hamMailContents = fileHelper.getMailContentOfMails("data/ham-kallibrierung");
+        List<String> spamMailContents = fileHelper.getMailContentOfMails("data/spam-kallibrierung");
 
         double bestF1Score = 0d;
         double bestAlpha = 0d;
@@ -64,14 +64,6 @@ public class Scorer {
         }
 
         return bestAlpha;
-    }
-
-    public List<String> getMailContentOfMails(String folder) {
-        return FileHelper.getFiles(folder)
-                         .stream()
-                         .map(fileName -> folder + "/" + fileName)
-                         .map(fileHelper::getFileContent)
-                         .collect(Collectors.toList());
     }
 
 }

@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * @author Hasan Kara <hasan.kara@students.fhnw.ch>
@@ -50,6 +51,14 @@ public class FileHelper {
 
         return result.toString();
 
+    }
+
+    public List<String> getMailContentOfMails(String folder) {
+        return FileHelper.getFiles(folder)
+                         .stream()
+                         .map(fileName -> folder + "/" + fileName)
+                         .map(this::getFileContent)
+                         .collect(Collectors.toList());
     }
 
 }
