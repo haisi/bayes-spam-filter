@@ -12,7 +12,9 @@ public class SpamClassifier {
     final Tokenizer tokenizer;
 
     private int numberOfHamMails;
+    private int numberNormalizedOfHamMails = -1;
     private int numberOfSpamMails;
+    private int numberNormalizedOfSpamMails = -1;
 
     public SpamClassifier(FileHelper fileHelper, Tokenizer tokenizer) {
         this.fileHelper = fileHelper;
@@ -28,12 +30,42 @@ public class SpamClassifier {
         return words;
     }
 
-    public int getNumberOfHamMails() {
+    int getNumberOfHamMails() {
         return numberOfHamMails;
     }
 
-    public int getNumberOfSpamMails() {
+    int getNormalizedNumberOfHamMails() {
+        if (numberNormalizedOfHamMails == -1) {
+            calculateAndSetNormalizedNumberOfMails();
+        }
+
+        return numberNormalizedOfHamMails;
+    }
+
+    int getNumberOfSpamMails() {
         return numberOfSpamMails;
+    }
+
+    int getNormalizedNumberOfSpamMails() {
+        if (numberNormalizedOfSpamMails == -1) {
+            calculateAndSetNormalizedNumberOfMails();
+        }
+
+        return numberNormalizedOfSpamMails;
+    }
+
+    private void calculateAndSetNormalizedNumberOfMails() {
+        //Nenner verkleinern
+        int min = Math.min(numberOfSpamMails, numberOfHamMails);
+        if (min != 0) {
+            numberOfSpamMails = numberOfSpamMails / min;
+            numberOfHamMails = numberOfHamMails / min;
+            words.forEach((s, hamSpamTuple) -> {
+                hamSpamTuple.normalizeByMinBagSize(min);
+            });
+        }
+        numberNormalizedOfSpamMails = numberOfSpamMails;
+        numberNormalizedOfHamMails = numberOfHamMails;
     }
 
     /**

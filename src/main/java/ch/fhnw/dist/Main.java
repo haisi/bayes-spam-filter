@@ -26,27 +26,21 @@ public class Main {
         int numberOfHamMails = classifier.getNumberOfHamMails();
         int numberOfSpamMails = classifier.getNumberOfSpamMails();
 
-        //Nenner verkleinern
-        int min = Math.min(numberOfSpamMails, numberOfHamMails);
-        if (min != 0) {
-            numberOfSpamMails = numberOfSpamMails / min;
-            numberOfHamMails = numberOfHamMails / min;
-            classifier.getWords().forEach((s, hamSpamTuple) -> {
-                hamSpamTuple.normalizeByMinBagSize(min);
-            });
-        }
-        int finalNumberOfSpamMails = numberOfSpamMails;
-        int finalNumberOfHamMails = numberOfHamMails;
+        int normalizedNumberOfSpamMails = classifier.getNormalizedNumberOfSpamMails();
+        int normalizedNumberOfHamMails = classifier.getNormalizedNumberOfHamMails();
+        printSpamProbabilityForEachWord(normalizedNumberOfSpamMails, normalizedNumberOfHamMails);
 
+        System.out.println("\n---------------TOTAL SPAM PROBABILITY FOR SPAM MAIL:---------------");
+        System.out.println(classifier.totalSpamProbability(fileHelper.getFileContent("data/spam-kallibrierung/00040.949a3d300eadb91d8745f1c1dab51133"), normalizedNumberOfSpamMails, normalizedNumberOfHamMails));
+
+        System.out.println("\n---------------TOTAL SPAM PROBABILITY FOR HAM MAIL:---------------");
+        System.out.println(classifier.totalSpamProbability(fileHelper.getFileContent("data/ham-kallibrierung/0001.ea7e79d3153e7469e7a9c3e0af6a357e"), normalizedNumberOfSpamMails, normalizedNumberOfHamMails));
+    }
+
+    private void printSpamProbabilityForEachWord(int finalNumberOfSpamMails, int finalNumberOfHamMails) {
         classifier.getWords().forEach((s, hamSpamTuple) -> {
             System.out.println(s + "\t" + hamSpamTuple.getProbabilitySpam(finalNumberOfSpamMails, finalNumberOfHamMails));
         });
-
-        System.out.println("\n---------------TOTAL SPAM PROBABILITY FOR SPAM MAIL:---------------");
-        System.out.println(classifier.totalSpamProbability(fileHelper.getFileContent("data/spam-kallibrierung/00040.949a3d300eadb91d8745f1c1dab51133"), finalNumberOfSpamMails, finalNumberOfHamMails));
-
-        System.out.println("\n---------------TOTAL SPAM PROBABILITY FOR HAM MAIL:---------------");
-        System.out.println(classifier.totalSpamProbability(fileHelper.getFileContent("data/ham-kallibrierung/0001.ea7e79d3153e7469e7a9c3e0af6a357e"), finalNumberOfSpamMails, finalNumberOfHamMails));
     }
 
 }
