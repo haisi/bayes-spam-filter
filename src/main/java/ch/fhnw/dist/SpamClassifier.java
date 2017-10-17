@@ -97,23 +97,23 @@ public class SpamClassifier {
         }
 
         //Variante 1
-//        BigDecimal productSpamProbability = spamProbability;
-//        BigDecimal productHamProbability = hamProbability;
+//        BigDecimal productSpamProbability = new BigDecimal("0.5");
+//        BigDecimal productHamProbability = new BigDecimal("0.5");
 //        for (HamSpamTuple hamSpamTuple : wordsInMailAndDatabase.values()) {
 //            BigDecimal pSpam = hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails);
 //            BigDecimal pHam = hamSpamTuple.getProbabilityHam(numberOfSpamMails, numberOfHamMails);
-//            if(pSpam > 0){
-//                productSpamProbability *= pSpam;
+//            if(pSpam.compareTo(BigDecimal.ZERO) == 1){
+//                productSpamProbability = productHamProbability.multiply(pSpam);
 //            }
-//            if(pHam > 0){
-//                productHamProbability *= pHam;
+//            if(pHam.compareTo(BigDecimal.ZERO) == 1){
+//                productHamProbability = productHamProbability.multiply(pHam);
 //            }
 //        }
 //
 //        BigDecimal zaehler = productSpamProbability;
-//        BigDecimal nenner = productSpamProbability + productHamProbability;
+//        BigDecimal nenner = productSpamProbability.add(productHamProbability);
 //
-//        return zaehler / nenner;
+//        return zaehler.divide(nenner, MathContext.DECIMAL128);
 
         //Variante 2
         BigDecimal product = new BigDecimal(1);

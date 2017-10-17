@@ -23,19 +23,22 @@ public class Scorer {
         List<String> spamMailContents = fileHelper.getMailContentOfMails("data/spam-kallibrierung");
 
         double bestF1Score = 0d;
-        double bestAlpha = 0d;
+        BigDecimal bestAlpha = BigDecimal.ZERO;
+        Score bestScore = new Score();
 
-        double alpha = 0.0005;
-        double endAlpha = 0.001;
-        double steps = 0.0005; // Steps with which alpha increases;
+        BigDecimal alpha = new BigDecimal("0.00000000005");
+        BigDecimal endAlpha = new BigDecimal("0.0000000002");
+        BigDecimal steps = new BigDecimal("0.00000000005"); // Steps with which alpha increases;
 
-        for (; alpha < endAlpha ; alpha+=steps) {
+        for (; alpha.compareTo(endAlpha) == -1 ; alpha = alpha.add(steps)) {
+
+            System.out.println("Iteration: " + alpha);
 
             final Score score = new Score();
 
             for (String hamMailContent : hamMailContents) {
                 double spamProbability = spamClassifier.totalSpamProbability(hamMailContent).doubleValue();
-                if (spamProbability < alpha) {
+                if (new BigDecimal(spamProbability).compareTo(alpha) == -1) {
                     // Correct
                     score.incrementTp();
                 } else {
@@ -46,7 +49,7 @@ public class Scorer {
 
             for (String spamMailContent : spamMailContents) {
                 double spamProbability = spamClassifier.totalSpamProbability(spamMailContent).doubleValue();
-                if (spamProbability > alpha) {
+                if (new BigDecimal(spamProbability).compareTo(alpha) == 1) {
                     // Correctly classified as spam
                     score.incrementTp();
                 } else {
@@ -61,12 +64,17 @@ public class Scorer {
             if (f1Score > bestF1Score) {
                 bestF1Score = f1Score;
                 bestAlpha = alpha;
+                bestScore = score;
+                System.out.println("Found new best");
             }
         }
 
+        System.out.println("Precision: " + bestScore.getPrecision());
+        System.out.println("Recall: " + bestScore.getRecall());
         System.out.println("Best F1 score: " + bestF1Score);
+        System.out.println("Best alphaaa: " + bestAlpha.toPlainString());
 
-        return bestAlpha;
+        return bestAlpha.doubleValue();
     }
 
 }

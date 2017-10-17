@@ -37,12 +37,12 @@ public class HamSpamTuple {
     }
 
     public BigDecimal incrementHam() {
-        hamCount = hamCount.add(new BigDecimal(1));
+        hamCount = hamCount.add(BigDecimal.ONE);
         return hamCount;
     }
 
     public BigDecimal incrementSpam() {
-        spamCount = spamCount.add(new BigDecimal(1));
+        spamCount = spamCount.add(BigDecimal.ONE);
         return spamCount;
     }
 

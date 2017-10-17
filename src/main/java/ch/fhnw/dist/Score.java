@@ -13,15 +13,15 @@ public class Score {
     private BigDecimal falseNegatives = new BigDecimal(0);
 
     public void incrementTp() {
-        truePositives = truePositives.add(new BigDecimal(1));
+        truePositives = truePositives.add(BigDecimal.ONE);
     }
 
     public void incrementFp() {
-        falsePositives = falsePositives.add(new BigDecimal(1));;
+        falsePositives = falsePositives.add(BigDecimal.ONE);
     }
 
     public void incrementFn() {
-        falseNegatives = falseNegatives.add(new BigDecimal(1));;
+        falseNegatives = falseNegatives.add(BigDecimal.ONE);
     }
 
 
@@ -40,6 +40,6 @@ public class Score {
     BigDecimal getF1Score() {
         BigDecimal zähler = getPrecision().multiply(getRecall());
         BigDecimal nenner = getPrecision().multiply(getRecall());
-        return new BigDecimal(2).multiply(zähler.divide(nenner));
+        return new BigDecimal(2).multiply(zähler.divide(nenner, MathContext.DECIMAL128));
     }
 }
