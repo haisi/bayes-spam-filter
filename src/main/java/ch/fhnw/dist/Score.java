@@ -1,42 +1,45 @@
 package ch.fhnw.dist;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 /**
  * @author Hasan Kara <hasan.kara@students.fhnw.ch>
  */
 public class Score {
 
-    private double truePositives = 0;
-    private double falsePositives = 0;
-    private double falseNegatives = 0;
+    private BigDecimal truePositives = new BigDecimal(0);
+    private BigDecimal falsePositives = new BigDecimal(0);
+    private BigDecimal falseNegatives = new BigDecimal(0);
 
     public void incrementTp() {
-        truePositives++;
+        truePositives = truePositives.add(new BigDecimal(1));
     }
 
     public void incrementFp() {
-        falsePositives++;
+        falsePositives = falsePositives.add(new BigDecimal(1));;
     }
 
     public void incrementFn() {
-        falseNegatives++;
+        falseNegatives = falseNegatives.add(new BigDecimal(1));;
     }
 
 
-    public double getPrecision() {
-        return truePositives / (truePositives + falsePositives);
+    public BigDecimal getPrecision() {
+        return truePositives.divide(truePositives.add(falsePositives), MathContext.DECIMAL128);
     }
 
-    public double getRecall() {
-        return truePositives / (truePositives + falseNegatives);
+    public BigDecimal getRecall() {
+        return truePositives.divide(truePositives.add(falseNegatives), MathContext.DECIMAL128);
     }
 
     /**
      *
      * @return harmonic mean of precision and recall
      */
-    double getF1Score() {
-        double zähler = getPrecision() * getRecall();
-        double nenner = getPrecision() + getRecall();
-        return 2 * (zähler / nenner);
+    BigDecimal getF1Score() {
+        BigDecimal zähler = getPrecision().multiply(getRecall());
+        BigDecimal nenner = getPrecision().multiply(getRecall());
+        return new BigDecimal(2).multiply(zähler.divide(nenner));
     }
 }

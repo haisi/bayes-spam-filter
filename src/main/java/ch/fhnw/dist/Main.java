@@ -1,6 +1,7 @@
 package ch.fhnw.dist;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,6 +44,7 @@ public class Main {
         }
 
 
+        System.out.println("calculating:\n");
         double bestAlpha = scorer.calculateBestAlpha();
         System.out.println("Best Alpha: " + bestAlpha);
 

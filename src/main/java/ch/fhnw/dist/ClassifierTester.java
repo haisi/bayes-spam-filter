@@ -21,7 +21,7 @@ public class ClassifierTester {
         int correctClassifiedHam = 0;
 
         for (String content : hamMailContent) {
-            double spamProbability = classifier.totalSpamProbability(content);
+            double spamProbability = classifier.totalSpamProbability(content).doubleValue();
             if (spamProbability < alpha) {
                 correctClassifiedHam++;
             }
@@ -35,7 +35,7 @@ public class ClassifierTester {
         int correctClassifiedSpam = 0;
 
         for (String content : spamMailContents) {
-            double spamProbability = classifier.totalSpamProbability(content);
+            double spamProbability = classifier.totalSpamProbability(content).doubleValue();
             if (spamProbability < alpha) {
                 correctClassifiedSpam++;
             }

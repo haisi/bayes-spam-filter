@@ -1,5 +1,6 @@
 package ch.fhnw.dist;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,16 +25,16 @@ public class Scorer {
         double bestF1Score = 0d;
         double bestAlpha = 0d;
 
-        double alpha = 0.05;
-        double endAlpha = 1d;
-        double steps = 0.05; // Steps with which alpha increases;
+        double alpha = 0.0005;
+        double endAlpha = 0.001;
+        double steps = 0.0005; // Steps with which alpha increases;
 
-        for (; alpha < endAlpha; alpha += steps) {
+        for (; alpha < endAlpha ; alpha+=steps) {
 
             final Score score = new Score();
 
             for (String hamMailContent : hamMailContents) {
-                double spamProbability = spamClassifier.totalSpamProbability(hamMailContent);
+                double spamProbability = spamClassifier.totalSpamProbability(hamMailContent).doubleValue();
                 if (spamProbability < alpha) {
                     // Correct
                     score.incrementTp();
@@ -44,7 +45,7 @@ public class Scorer {
             }
 
             for (String spamMailContent : spamMailContents) {
-                double spamProbability = spamClassifier.totalSpamProbability(spamMailContent);
+                double spamProbability = spamClassifier.totalSpamProbability(spamMailContent).doubleValue();
                 if (spamProbability > alpha) {
                     // Correctly classified as spam
                     score.incrementTp();
@@ -56,7 +57,7 @@ public class Scorer {
 
             // Check whether with the current alpha we get a better F1 score
             // and change the most effective alpha value accordingly.
-            double f1Score = score.getF1Score();
+            double f1Score = score.getF1Score().doubleValue();
             if (f1Score > bestF1Score) {
                 bestF1Score = f1Score;
                 bestAlpha = alpha;

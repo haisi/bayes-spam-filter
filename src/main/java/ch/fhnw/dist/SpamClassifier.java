@@ -1,5 +1,7 @@
 package ch.fhnw.dist;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.*;
 
 /**
@@ -61,14 +63,14 @@ public class SpamClassifier {
             numberOfSpamMails = numberOfSpamMails / min;
             numberOfHamMails = numberOfHamMails / min;
             words.forEach((s, hamSpamTuple) -> {
-                hamSpamTuple.normalizeByMinBagSize(min);
+                hamSpamTuple.normalizeByMinBagSize(new BigDecimal(min));
             });
         }
         numberNormalizedOfSpamMails = numberOfSpamMails;
         numberNormalizedOfHamMails = numberOfHamMails;
     }
 
-    public double totalSpamProbability(String mailContent) {
+    public BigDecimal totalSpamProbability(String mailContent) {
         return totalSpamProbability(mailContent, getNormalizedNumberOfSpamMails(), getNormalizedNumberOfHamMails());
     }
 
@@ -80,7 +82,7 @@ public class SpamClassifier {
      * @param numberOfHamMails
      * @return
      */
-    public double totalSpamProbability(String mailContent, int numberOfSpamMails, int numberOfHamMails) {
+    public BigDecimal totalSpamProbability(String mailContent, int numberOfSpamMails, int numberOfHamMails) {
 
         String[] tokens = tokenizer.getTokens(mailContent);
         HashSet<String> nonDuplicateTokens = new HashSet<>(Arrays.asList(tokens));
@@ -95,11 +97,11 @@ public class SpamClassifier {
         }
 
         //Variante 1
-//        double productSpamProbability = spamProbability;
-//        double productHamProbability = hamProbability;
+//        BigDecimal productSpamProbability = spamProbability;
+//        BigDecimal productHamProbability = hamProbability;
 //        for (HamSpamTuple hamSpamTuple : wordsInMailAndDatabase.values()) {
-//            double pSpam = hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails);
-//            double pHam = hamSpamTuple.getProbabilityHam(numberOfSpamMails, numberOfHamMails);
+//            BigDecimal pSpam = hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails);
+//            BigDecimal pHam = hamSpamTuple.getProbabilityHam(numberOfSpamMails, numberOfHamMails);
 //            if(pSpam > 0){
 //                productSpamProbability *= pSpam;
 //            }
@@ -108,21 +110,21 @@ public class SpamClassifier {
 //            }
 //        }
 //
-//        double zaehler = productSpamProbability;
-//        double nenner = productSpamProbability + productHamProbability;
+//        BigDecimal zaehler = productSpamProbability;
+//        BigDecimal nenner = productSpamProbability + productHamProbability;
 //
 //        return zaehler / nenner;
 
         //Variante 2
-        double product = 1;
+        BigDecimal product = new BigDecimal(1);
         for (HamSpamTuple hamSpamTuple : wordsInMailAndDatabase.values()) {
-            double pSpam = hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails);
-            double pHam = hamSpamTuple.getProbabilityHam(numberOfSpamMails, numberOfHamMails);
-            if(pSpam > 0 && pHam > 0){
-                product *= (pHam * pSpam);
+            BigDecimal pSpam = hamSpamTuple.getProbabilitySpam(numberOfSpamMails, numberOfHamMails);
+            BigDecimal pHam = hamSpamTuple.getProbabilityHam(numberOfSpamMails, numberOfHamMails);
+            if(pSpam.compareTo(new BigDecimal(0)) == 1 && pHam.compareTo(new BigDecimal(0)) == 1){
+                product = product.multiply(pHam.multiply(pSpam));
             }
         }
-        return 1/(1+product);
+        return new BigDecimal(1).divide(new BigDecimal(1).add(product), MathContext.DECIMAL128);
     }
 
     private int countWords(String folder, boolean spam) {
